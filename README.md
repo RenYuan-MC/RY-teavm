@@ -1,3 +1,16 @@
+# eagler-teavm
+
+### Branch: eagler-r2
+
+Fork of TeaVM for compiling EaglercraftX's WASM GC runtime
+
+#### Changes in this fork:
+- Added heap grow callback to TeaVM's new malloc/free implementation
+
+#### New API Additions
+
+None this time. See [eagler-r1](https://github.com/Eaglercraft-TeaVM-Fork/eagler-teavm/tree/eagler-r1) for the original eagler malloc/free.
+
 # TeaVM
 
 [![.github/workflows/ci.yml](https://github.com/konsoletyper/teavm/actions/workflows/ci.yml/badge.svg)](https://github.com/konsoletyper/teavm/actions/workflows/ci.yml)
