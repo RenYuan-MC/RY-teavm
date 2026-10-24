@@ -311,4 +311,7 @@ public final class TSystem extends TObject {
     public static String getenv(String name) {
         return null;
     }
+
+    public static void exit(@SuppressWarnings("unused") int status) {
+    }
 }

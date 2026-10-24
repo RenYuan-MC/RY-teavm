@@ -246,4 +246,8 @@ public class TDateFormatSymbols implements TSerializable, TCloneable {
     public static TDateFormatSymbols getInstance(TLocale locale) {
         return new TDateFormatSymbols(locale);
     }
+
+    public static TDateFormatSymbols getInstance() {
+        return new TDateFormatSymbols();
+    }
 }

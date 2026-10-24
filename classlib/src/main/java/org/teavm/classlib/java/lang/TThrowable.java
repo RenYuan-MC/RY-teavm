@@ -256,12 +256,18 @@ public class TThrowable extends RuntimeException {
 
     @Rename("getSuppressed")
     public final TThrowable[] getSuppressed0() {
+        if (suppressed == null) {
+            return new TThrowable[0];
+        }
         return TArrays.copyOf(suppressed, suppressed.length);
     }
 
     public final void addSuppressed(TThrowable exception) {
         if (!suppressionEnabled) {
             return;
+        }
+        if (suppressed == null) {
+            suppressed = new TThrowable[0];
         }
         suppressed = TArrays.copyOf(suppressed, suppressed.length + 1);
         suppressed[suppressed.length - 1] = exception;

@@ -247,6 +247,10 @@ public final class TMatcher implements TMatchResult {
         return buffer.append(string.subSequence(appendPos, string.length()));
     }
 
+    public StringBuilder appendTail(StringBuilder builder) {
+        return builder.append(string.subSequence(appendPos, string.length()));
+    }
+
     /**
      * Replaces the first occurrence of this matcher's pattern in the input with
      * a given string.

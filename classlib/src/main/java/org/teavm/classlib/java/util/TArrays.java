@@ -1816,6 +1816,125 @@ public class TArrays extends TObject {
         return true;
     }
 
+    public static int compare(byte[] a, byte[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Byte.compare(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compare(char[] a, char[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Character.compare(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compare(int[] a, int[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Integer.compare(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compare(long[] a, long[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Long.compare(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compareUnsigned(byte[] a, byte[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Integer.compare(a[i] & 0xff, b[i] & 0xff);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compareUnsigned(int[] a, int[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Integer.compareUnsigned(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
+    public static int compareUnsigned(long[] a, long[] b) {
+        if (a == b) {
+            return 0;
+        }
+        if (a == null || b == null) {
+            return a == null ? -1 : 1;
+        }
+        int length = Math.min(a.length, b.length);
+        for (int i = 0; i < length; ++i) {
+            int cmp = Long.compareUnsigned(a[i], b[i]);
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        return a.length - b.length;
+    }
+
     @SafeVarargs
     public static <T> TList<T> asList(final T... a) {
         Objects.requireNonNull(a);

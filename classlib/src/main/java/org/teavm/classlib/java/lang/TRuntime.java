@@ -93,4 +93,25 @@ public class TRuntime {
     public int availableProcessors() {
         return Navigator.hardwareConcurrency();
     }
+
+    /**
+     * Returns the maximum amount of memory that the virtual machine will attempt to use.
+     * The browser runtime has no such limit, so a fixed value is reported.
+     */
+    public long maxMemory() {
+        return 512L * 1024 * 1024;
+    }
+
+    public void addShutdownHook(Thread hook) {
+        if (hook == null) {
+            throw new NullPointerException("hook");
+        }
+    }
+
+    public boolean removeShutdownHook(Thread hook) {
+        return true;
+    }
+
+    public void halt(int status) {
+    }
 }

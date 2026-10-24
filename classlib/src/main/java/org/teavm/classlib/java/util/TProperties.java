@@ -18,6 +18,7 @@ package org.teavm.classlib.java.util;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import org.teavm.classlib.java.io.TBufferedInputStream;
 import org.teavm.classlib.java.io.TInputStream;
@@ -356,8 +357,7 @@ public class TProperties extends THashtable<Object, Object> {
             writeComments(writer, comments);
         }
         writer.write('#');
-        writer.write(new TDate().toString());
-        writer.write("\n");
+        writer.write('\n');
 
         StringBuilder buffer = new StringBuilder(200);
         for (TIterator<TMap.Entry<Object, Object>> iter = entrySet().iterator(); iter.hasNext();) {
@@ -369,6 +369,86 @@ public class TProperties extends THashtable<Object, Object> {
             buffer.append("\n");
             writer.write(buffer.toString());
             buffer.setLength(0);
+        }
+        writer.flush();
+    }
+
+    public synchronized void load(Reader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[4096];
+        int n;
+        while ((n = reader.read(buffer)) != -1) {
+            sb.append(buffer, 0, n);
+        }
+        loadFromString(sb.toString());
+    }
+
+    private void loadFromString(String text) {
+        String[] lines = text.split("\n");
+        for (String raw : lines) {
+            String line = raw.trim();
+            if (line.isEmpty() || line.startsWith("#") || line.startsWith("!")) {
+                continue;
+            }
+            int idx = line.indexOf('=');
+            if (idx < 0) {
+                idx = line.indexOf(':');
+            }
+            if (idx < 0) {
+                setProperty(unescape(line), "");
+            } else {
+                setProperty(unescape(line.substring(0, idx).trim()),
+                        unescape(line.substring(idx + 1).trim()));
+            }
+        }
+    }
+
+    private static String unescape(String s) {
+        if (s.indexOf('\\') < 0) {
+            return s;
+        }
+        StringBuilder sb = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            if (c != '\\' || i + 1 >= s.length()) {
+                sb.append(c);
+                continue;
+            }
+            char n = s.charAt(++i);
+            switch (n) {
+            case 'n':
+                sb.append('\n');
+                break;
+            case 'r':
+                sb.append('\r');
+                break;
+            case 't':
+                sb.append('\t');
+                break;
+            case 'u':
+                if (i + 4 < s.length()) {
+                    sb.append((char) Integer.parseInt(s.substring(i + 1, i + 5), 16));
+                    i += 4;
+                }
+                break;
+            default:
+                sb.append(n);
+                break;
+            }
+        }
+        return sb.toString();
+    }
+
+    public void store(Writer writer, String comments) throws IOException {
+        if (comments != null) {
+            writeComments(writer, comments);
+        }
+        for (TIterator<TMap.Entry<Object, Object>> iter = entrySet().iterator(); iter.hasNext();) {
+            TMap.Entry<Object, Object> entry = iter.next();
+            writer.write(String.valueOf(entry.getKey()));
+            writer.write('=');
+            writer.write(String.valueOf(entry.getValue()));
+            writer.write('\n');
         }
         writer.flush();
     }

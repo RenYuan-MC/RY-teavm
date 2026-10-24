@@ -216,6 +216,11 @@ public class TObject {
     }
 
     static boolean holdsLock(TObject o) {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded and monitors are not implemented,
+            // so every object is trivially locked by the only running thread.
+            return true;
+        }
         return o.monitor != null && o.monitor.owner == TThread.currentThread();
     }
 
@@ -391,6 +396,10 @@ public class TObject {
 
     @Rename("notify")
     public final void notify0() {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded, there is nothing to notify.
+            return;
+        }
         if (!holdsLock(this)) {
             throw new TIllegalMonitorStateException();
         }
@@ -416,6 +425,10 @@ public class TObject {
 
     @Rename("notifyAll")
     public final void notifyAll0() {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded, there is nothing to notify.
+            return;
+        }
         if (!holdsLock(this)) {
             throw new TIllegalMonitorStateException();
         }
@@ -447,6 +460,10 @@ public class TObject {
 
     @Rename("wait")
     private void wait0(long timeout, int nanos) throws TInterruptedException {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded, waiting cannot make progress.
+            return;
+        }
         if (!holdsLock(this)) {
             throw new TIllegalMonitorStateException();
         }

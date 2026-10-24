@@ -128,6 +128,14 @@ public class TInteger extends TNumber implements TComparable<TInteger> {
         return parseInt(s, 10);
     }
 
+    public static int parseUnsignedInt(String s, int radix) throws TNumberFormatException {
+        return (int) Long.parseLong(s, radix);
+    }
+
+    public static int parseUnsignedInt(String s) throws TNumberFormatException {
+        return parseUnsignedInt(s, 10);
+    }
+
     public static TInteger valueOf(String s, int radix) throws TNumberFormatException {
         return valueOf(parseInt(s, radix));
     }

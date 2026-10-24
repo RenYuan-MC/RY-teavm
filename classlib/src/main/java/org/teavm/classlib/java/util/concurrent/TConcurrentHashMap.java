@@ -632,33 +632,51 @@ public class TConcurrentHashMap<K, V> extends TAbstractMap<K, V>
         return elementCount == 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public TSet<K> keySet() {
+    public KeySetView<K, V> keySet() {
         if (cachedKeySet == null) {
-            cachedKeySet = new TAbstractSet<>() {
-                @Override public boolean contains(Object object) {
-                    return containsKey(object);
-                }
-                @Override public int size() {
-                    return TConcurrentHashMap.this.size();
-                }
-                @Override public void clear() {
-                    TConcurrentHashMap.this.clear();
-                }
-                @Override public boolean remove(Object key) {
-                    HashEntry<K, V> entry = TConcurrentHashMap.this.getEntry(key);
-                    if (entry != null) {
-                        TConcurrentHashMap.this.removeEntry(entry);
-                        return true;
-                    }
-                    return false;
-                }
-                @Override public TIterator<K> iterator() {
-                    return new KeyIterator<>(TConcurrentHashMap.this);
-                }
-            };
+            cachedKeySet = new KeySetView<>(this);
         }
-        return cachedKeySet;
+        return (KeySetView<K, V>) cachedKeySet;
+    }
+
+    public static class KeySetView<K, V> extends TAbstractSet<K> {
+        private final TConcurrentHashMap<K, V> map;
+
+        KeySetView(TConcurrentHashMap<K, V> map) {
+            this.map = map;
+        }
+
+        @Override
+        public boolean contains(Object object) {
+            return map.containsKey(object);
+        }
+
+        @Override
+        public int size() {
+            return map.size();
+        }
+
+        @Override
+        public void clear() {
+            map.clear();
+        }
+
+        @Override
+        public boolean remove(Object key) {
+            HashEntry<K, V> entry = map.getEntry(key);
+            if (entry != null) {
+                map.removeEntry(entry);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public TIterator<K> iterator() {
+            return new KeyIterator<>(map);
+        }
     }
 
     @Override

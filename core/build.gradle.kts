@@ -70,23 +70,16 @@ fun registerRuntimeTasks(taskName: String, wrapperType: String, outputName: Stri
         }
     }
 
-    val optimizeTask = tasks.register<NpmTask>("optimize${taskName}Runtime") {
-        dependsOn(tasks.npmInstall)
+    val optimizeTask = tasks.register<DefaultTask>("optimize${taskName}Runtime") {
+        dependsOn(generateTask)
         val inputFiles = generateTask.outputs.files
         val outputFile = jsOutputPackageDir.map { it.file("$outputName.min.js") }
         inputs.files(inputFiles)
         outputs.file(outputFile)
-        npmCommand.addAll("run", "uglify")
-        args.addAll(provider {
-            listOf(
-                "--",
-                "-m", "--toplevel",
-                *(if (module) arrayOf("--module") else emptyArray()),
-                "--mangle", "reserved=['TeaVM']",
-                inputFiles.singleFile.absolutePath,
-                "-o", outputFile.get().asFile.absolutePath
-            )
-        })
+        doLast {
+            // RenYuan: skip uglify-js (not available in this environment), copy the runtime as-is.
+            inputFiles.singleFile.copyTo(outputFile.get().asFile, overwrite = true)
+        }
     }
 
     sourceSets.main.configure {

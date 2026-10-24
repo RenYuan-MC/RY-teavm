@@ -63,6 +63,10 @@ public class TThread extends TObject implements TRunnable {
     }
 
     public void start() {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target does not support threads; do not run the task.
+            return;
+        }
         if (PlatformDetector.isLowLevel()) {
             boolean daemon = this.daemon;
             if (!daemon) {
@@ -149,6 +153,10 @@ public class TThread extends TObject implements TRunnable {
     }
 
     public static void yield() {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded, yielding is a no-op.
+            return;
+        }
         TThread currentThread = currentThread();
         if (++currentThread.yieldCount < 30) {
             return;
@@ -211,10 +219,18 @@ public class TThread extends TObject implements TRunnable {
         return TObject.holdsLock(obj);
     }
 
-    @Async
-    public static native void sleep(long millis) throws TInterruptedException;
+    public static void sleep(long millis) throws TInterruptedException {
+        if (PlatformDetector.isWebAssemblyGC()) {
+            // RenYuan: the wasm-GC target is single-threaded, sleeping would block the browser.
+            return;
+        }
+        sleepAsync(millis);
+    }
 
-    private static void sleep(long millis, AsyncCallback<Void> callback) {
+    @Async
+    private static native void sleepAsync(long millis) throws TInterruptedException;
+
+    private static void sleepAsync(long millis, AsyncCallback<Void> callback) {
         TThread current = currentThread();
         SleepHandler handler = new SleepHandler(current, callback);
         if (PlatformDetector.isLowLevel()) {
@@ -279,6 +295,9 @@ public class TThread extends TObject implements TRunnable {
 
     public TClassLoader getContextClassLoader() {
         return TClassLoader.getSystemClassLoader();
+    }
+
+    public void setContextClassLoader(@SuppressWarnings("unused") TClassLoader loader) {
     }
     
     public UncaughtExceptionHandler getUncaughtExceptionHandler() {

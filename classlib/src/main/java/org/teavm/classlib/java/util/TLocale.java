@@ -257,6 +257,34 @@ public final class TLocale implements TCloneable, TSerializable {
         }
     }
 
+    public enum Category {
+        DISPLAY, FORMAT
+    }
+
+    public static TLocale getDefault(Category category) {
+        return getDefault();
+    }
+
+    public static void setDefault(Category category, TLocale newLocale) {
+        setDefault(newLocale);
+    }
+
+    public static TLocale forLanguageTag(String languageTag) {
+        if (languageTag == null || languageTag.isEmpty()) {
+            return ROOT;
+        }
+        String tag = languageTag.replace('-', '_');
+        int first = tag.indexOf('_');
+        if (first < 0) {
+            return new TLocale(tag, "");
+        }
+        int second = tag.indexOf('_', first + 1);
+        if (second < 0) {
+            return new TLocale(tag.substring(0, first), tag.substring(first + 1));
+        }
+        return new TLocale(tag.substring(0, first), tag.substring(first + 1, second), tag.substring(second + 1));
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

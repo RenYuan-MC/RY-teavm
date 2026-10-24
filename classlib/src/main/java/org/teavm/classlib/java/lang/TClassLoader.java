@@ -41,6 +41,14 @@ public abstract class TClassLoader extends TObject {
         return parent;
     }
 
+    protected Class<?> loadClass(String name) throws ClassNotFoundException {
+        return Class.forName(name);
+    }
+
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return Class.forName(name);
+    }
+
     public static TClassLoader getSystemClassLoader() {
         return systemClassLoader;
     }

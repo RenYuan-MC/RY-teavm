@@ -21,4 +21,17 @@ public class TSecurityManager {
 
     public TSecurityManager() {
     }
+
+    public void checkPermission(java.security.Permission perm) {
+    }
+
+    public void checkPermission(java.security.Permission perm, Object context) {
+    }
+
+    public Object getSecurityContext() {
+        return null;
+    }
+
+    public void checkRead(String file) {
+    }
 }

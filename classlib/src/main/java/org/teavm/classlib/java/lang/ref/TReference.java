@@ -15,9 +15,26 @@
  */
 package org.teavm.classlib.java.lang.ref;
 
+import java.lang.ref.ReferenceQueue;
 import org.teavm.classlib.java.lang.TObject;
 
+/**
+ * Base class for soft/weak/phantom references.
+ *
+ * <p>Keep this class free of instance fields: the wasmGC backend stores the native reference in a
+ * fixed field slot of the concrete reference structure (see WeakReferenceGenerator), so adding
+ * fields here shifts that slot and produces invalid reference casts.</p>
+ */
 public abstract class TReference<T> extends TObject {
+    protected TReference() {
+    }
+
+    protected TReference(T referent) {
+    }
+
+    protected TReference(T referent, ReferenceQueue<? super T> queue) {
+    }
+
     public T get() {
         return null;
     }
