@@ -60,16 +60,9 @@ public class TSecureRandom extends TRandom {
     }
 
     protected int next(int bits) {
-        int numBytes = (bits + 7) / 8;
-        byte[] bytes = new byte[numBytes];
-        nextBytes(bytes);
-
-        int val = 0;
-        for (int i = 0; i < numBytes; ++i) {
-            val = (val << 8) | (bytes[i] & 0xFF);
-        }
-
-        return val >>> (numBytes * 8 - bits);
+        // RenYuan: this must not go through nextBytes(), because RandomGenerator.nextBytes()
+        // calls nextInt() -> next() and would recurse forever.
+        return (int) (Math.random() * (1L << bits));
     }
 
     @Override
@@ -84,8 +77,11 @@ public class TSecureRandom extends TRandom {
         } else {
             // TODO: Implement wrapper to JavaScript (Crypto) for WASM backend
             // TODO: Implement proper randomness source in C backend (/dev/urandom, etc.)
-            // Fall back to generic random implementation
-            super.nextBytes(bytes);
+            // RenYuan: fill the array directly; RandomGenerator.nextBytes() would recurse through
+            // nextInt() -> next().
+            for (int i = 0; i < bytes.length; ++i) {
+                bytes[i] = (byte) (Math.random() * 256);
+            }
         }
     }
 
