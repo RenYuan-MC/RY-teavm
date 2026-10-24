@@ -93,6 +93,16 @@ public interface TDatabaseMetaData extends TWrapper {
 
     String getIdentifierQuoteString() throws TSQLException;
 
+    boolean storesUpperCaseIdentifiers() throws TSQLException;
+
+    boolean storesLowerCaseIdentifiers() throws TSQLException;
+
+    boolean storesMixedCaseIdentifiers() throws TSQLException;
+
+    boolean storesMixedCaseQuotedIdentifiers() throws TSQLException;
+
+    boolean supportsMixedCaseIdentifiers() throws TSQLException;
+
     String getDatabaseProductVersion() throws TSQLException;
 
     String getDriverName() throws TSQLException;

@@ -308,6 +308,16 @@ public class TConcurrentHashMap<K, V> extends TAbstractMap<K, V>
         return getEntry(key) != null;
     }
 
+    /**
+     * Legacy spelling of {@link #containsValue(Object)}.
+     *
+     * @param value the value to look for
+     * @return true if the value is present
+     */
+    public boolean contains(Object value) {
+        return containsValue(value);
+    }
+
     @Override
     public boolean containsValue(Object value) {
         repeatTable: do {
